@@ -32,3 +32,5 @@ code/*.rdb
 code/*.rdx
 
 
+.Rproj.user
+.DS_Store
