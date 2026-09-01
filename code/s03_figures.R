@@ -111,10 +111,11 @@ fig3a <- ggplot() +
   geom_gdata(data = asiaGD, shape = 21, fill = "firebrick",
              colour = "white", size = 3) +
   coord_sf(crs = ortho_crs) +
-  theme_void()
+  theme_void() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_colourbar(title.position = "top", title.hjust = 0.5,
+                                  barwidth = 12, barheight = 0.5))
 
-ggsave("results/fig3a.png", plot = fig3a,
-       width = 6, height = 6, units = "in", dpi = 300, bg = "white")
 
 
 ###################################
@@ -194,16 +195,38 @@ fig3c_a <- ggplot() +
   scale_colour_manual(values = pal0, na.value = "transparent", guide = "none") +
   geom_gpath(data = m, colour = "firebrick", linewidth = 0.5) +
   geom_gdata(data = asiaGD, shape = 21, fill = "black", colour = "white", size = 3) +
-  ggtitle("Without terrain") + panel_theme
+  panel_theme
 
-## (b) WITH terrain — ruggedness-weighted grid, terrain-aware paths
 fig3c_b <- ggplot() +
   geom_ggraph(data = optiGraph, aes(colour = habitat), edges = FALSE, size = 0.6) +
   scale_colour_manual(values = pal1, na.value = "transparent", guide = "none") +
   geom_gpath(data = m_elev, colour = "firebrick", linewidth = 0.5) +
   geom_gdata(data = asiaGD, shape = 21, fill = "black", colour = "white", size = 3) +
-  ggtitle("With terrain (ruggedness)") + panel_theme
+  panel_theme
 
 fig3c <- fig3c_a + fig3c_b
 ggsave("results/fig3c.png", fig3c, width = 10, height = 5, units = "in",
        dpi = 300, bg = "white")
+
+
+########################################
+# Figure 3 — assemble
+########################################
+
+# A = ruggedness (big left) | C = without terrain (top right)
+# D = with terrain (bottom right) | B = sweep (full-width bottom)
+design <- "
+AAC
+AAD
+BBB
+"
+
+fig3 <- fig3a + fig3b + fig3c_a + fig3c_b +
+  plot_layout(design = design,
+              widths  = c(1, 1, 1.1),
+              heights = c(1, 1, 1.1)) +   # taller sweep row (was 0.8)
+  plot_annotation(tag_levels = "A") &
+  theme(plot.tag = element_text(face = "bold", size = 16))
+
+ggsave("results/fig3.png", fig3,
+       width = 11, height = 10.5, units = "in", dpi = 300, bg = "white")
