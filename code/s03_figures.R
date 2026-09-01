@@ -3,6 +3,7 @@
 
 library(ggplot2)
 library(sf)
+library(geoGraph)
 
 ########################################
 # Fig. 2a
@@ -129,32 +130,34 @@ plateau  <- profile[profile$mantel_r >= max(profile$mantel_r) - 0.01, ]
 plat_x   <- range(plateau$threshold)
 
 fig3b <- ggplot(profile, aes(threshold, mantel_r)) +
-  
   # plateau of near-best thresholds
   annotate("rect", xmin = plat_x[1], xmax = plat_x[2],
-           ymin = -Inf, ymax = Inf, fill = "#2C6FB0", alpha = 0.08) +
-  
-  # add baseline
-  geom_hline(yintercept = baseline, linetype = "dashed", colour = "grey55") +
-  annotate("text", x = max(profile$threshold), y = baseline,
-           label = "plain grid (no terrain)", hjust = 1, vjust = -0.6,
-           size = 3, colour = "grey45") +
-  # plot the sweep curve
-  geom_line(colour = "grey30", linewidth = 0.5) +
-  geom_point(colour = "grey30", size = 0.9) +
-  # best-fitting threshold
-  geom_point(data = best, colour = "#B2182B", size = 2.8) +
+           ymin = -Inf, ymax = Inf, fill = "#2C6FB0", alpha = 0.10) +
+  # baseline: plain grid (no terrain)
+  geom_hline(yintercept = baseline, linetype = "dashed",
+             colour = "grey55", linewidth = 0.7) +
+  annotate("text", x = min(profile$threshold), y = baseline,
+           label = "plain grid (no terrain)",
+           hjust = 0, vjust = -0.7, size = 4.6, colour = "grey40") +
+  # sweep curve
+  geom_line(colour = "grey30", linewidth = 0.9) +
+  # best-fitting threshold (white halo + red point)
+  geom_point(data = best, colour = "white",   size = 5.2) +
+  geom_point(data = best, colour = "#B2182B", size = 3.6) +
   annotate("text", x = best$threshold, y = best$mantel_r,
-           label = sprintf("best: r = %.2f  (%s)", best$mantel_r, best$quantile),
-           hjust = -0.08, vjust = 0.4, size = 3, colour = "#B2182B") +
+           label = sprintf("best: r = %.2f (%s)", best$mantel_r, best$quantile),
+           hjust = -0.05, vjust = -1.0, size = 4.8, colour = "#B2182B",
+           fontface = "bold") +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.14))) +
   labs(x = "Ruggedness threshold (SD of elevation, m)",
-       y = expression("Mantel "*italic(r)*" vs pairwise "*F[ST])) +
-  coord_cartesian(clip = "off") +
-  theme_classic(base_size = 12) +
-  theme(plot.margin = margin(6, 70, 6, 6))
+       y = expression("Mantel "*italic(r)*" vs pairwise "*italic(F)[ST])) +
+  theme_classic(base_size = 15) +
+  theme(plot.margin = margin(8, 12, 8, 8),
+        axis.title = element_text(size = 15),
+        axis.text  = element_text(size = 13))
 
-ggsave("results/fig3b.png", plot = fig3b,
-       width = 6, height = 6, units = "in", dpi = 300, bg = "white")
+ggsave("results/fig3b.png", fig3b, width = 7, height = 4.2,
+       units = "in", dpi = 300, bg = "white")
 
 ###################################
 # figure 3c
