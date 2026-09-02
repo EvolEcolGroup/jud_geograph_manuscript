@@ -21,7 +21,7 @@ rownames(fst_mat) <- Fst_pairwise[[1]]
 hgdpData <- getData(hgdp)
 
 ########################################
-# 2. Standardise population names and identify shared populations
+# 2. Standardize population names and identify shared populations
 ########################################
 
 # HGDP-side rename
@@ -81,7 +81,7 @@ out_dir <- "data/intermediate/hgdp_worldwide"
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 
 saveRDS(hgdp.sub, file.path(out_dir, "hgdp.sub.rds"))
-saveRDS(mantel_r_gc, file.path(out_dir, "mantel_r_gc"))
-saveRDS(gc_dist, file.path(out_dir, "gc_dist"))
-saveRDS(lcp_dist, file.path(out_dir, "lcp_dist"))
-saveRDS(fst_shared, file.path(out_dir, "fst_shared"))
+saveRDS(mantel_r_gc, file.path(out_dir, "mantel_r_gc.rds"))
+saveRDS(gc_dist, file.path(out_dir, "gc_dist.rds"))
+saveRDS(lcp_dist, file.path(out_dir, "lcp_dist.rds"))
+saveRDS(fst_shared, file.path(out_dir, "fst_shared.rds"))
