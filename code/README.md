@@ -1,7 +1,42 @@
-# Code
+# Analysis Scripts
 
-The code for your analysis goes here. Scripts should use relative paths to find data (e.g. `../data/raw/defaults/my_data.txt`) as well as to write to results (e.g. `../results/Fig_1png`).
-If you have many scripts, it is often better to have them writing results into separate sub-directories
-under `results`, as it helps tracking where each result file comes from. This strategy also allows to have a simple command at the beginning of a script which wipes the results directory before generating the new set of results (thus avoiding the risk of having old files from obsolete analysis floating around the repository)
+Run scripts sequentially from the repository root:
 
-It is good practice to add a metafile that tells what every script does (e.g. you can add this info here in the readme).
+```r
+source("code/s01_hgdp_worldwide.R")
+source("code/s02_hgdp_asia.R")
+source("code/s03_figures.R")
+```
+
+## s01_hgdp_worldwide.R
+
+Worldwide analysis with 49 HGDP populations.
+
+- Loads FST matrix and population coordinates
+- Computes great-circle and land-restricted least-cost distances
+- Mantel tests: great-circle (*r* = 0.749) vs land LCP (*r* = 0.867)
+- Saves intermediate data to `data/intermediate/hgdp_worldwide/`
+
+**Runtime:** ~30 seconds
+
+## s02_hgdp_asia.R
+
+Asia case study with terrain ruggedness model (23 populations).
+
+- Builds hexagonal grid and downloads elevation data
+- Grid search: sweeps ruggedness thresholds to find optimal fit
+- Mantel tests: plain LCP (*r* = 0.536) vs ruggedness-weighted LCP (*r* = 0.700)
+- Saves intermediate data to `data/intermediate/hgdp_asia/`
+
+**Runtime:** ~5–10 minutes
+
+## s03_figures.R
+
+Generates publication figures 2 and 3.
+
+- Figure 2a: orthographic map with LCP paths
+- Figure 2b: FST vs distance scatter plots
+- Figure 3a–c: Asia ruggedness and terrain effects
+- Saves PNG files to `results/`
+
+**Runtime:** ~1–2 minutes
