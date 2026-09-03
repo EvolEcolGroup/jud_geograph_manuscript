@@ -1,6 +1,6 @@
 # Geographic and Genetic Distance: Case Studies using geoGraph
 
-Reproducible R analysis demonstrating how geographic constraints (land connectivity and terrain ruggedness) improve prediction of genetic differentiation (FST) in human populations.
+R scripts to reproduce the analyses and figures in the manuscript "geoGraph: Connectivity modelling across geographic space with hexagonal discrete global grids"
 
 ## Quick Start
 
