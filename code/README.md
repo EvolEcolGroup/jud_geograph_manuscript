@@ -17,18 +17,16 @@ Worldwide analysis with 49 HGDP populations.
 - Mantel tests: great-circle (*r* = 0.749) vs land LCP (*r* = 0.867)
 - Saves intermediate data to `data/intermediate/hgdp_worldwide/`
 
-**Runtime:** ~30 seconds
 
 ## s02_hgdp_asia.R
 
 Asia case study with terrain ruggedness model (23 populations).
 
-- Builds hexagonal grid and downloads elevation data
+- Builds custom hexagonal grid and downloads elevation data
 - Grid search: sweeps ruggedness thresholds to find optimal fit
 - Mantel tests: plain LCP (*r* = 0.536) vs ruggedness-weighted LCP (*r* = 0.700)
 - Saves intermediate data to `data/intermediate/hgdp_asia/`
 
-**Runtime:** ~5–10 minutes
 
 ## s03_figures.R
 
@@ -39,4 +37,3 @@ Generates publication figures 2 and 3.
 - Figure 3a–c: Asia ruggedness and terrain effects
 - Saves PNG files to `results/`
 
-**Runtime:** ~1–2 minutes
