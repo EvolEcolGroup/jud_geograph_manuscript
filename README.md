@@ -45,9 +45,9 @@ Ensure `data/raw/hgdp/Fst_pairwise.csv` is present, then run the scripts
 sequentially from the repository root:
 
 ```r
-source("code/s01_hgdp_worldwide.R")   # global case study  (Figure 2)
-source("code/s02_hgdp_asia.R")        # Asia case study     (Figure 3)
-source("code/s03_figures.R")          # assemble and save figures
+source("code/s01_hgdp_worldwide.R")  
+source("code/s02_hgdp_asia.R")       
+source("code/s03_figures.R")         
 ```
 
 ## Outputs
