@@ -6,7 +6,7 @@ discrete global grids."*
 
 ## Requirements
 
-- R (≥ 4.1)
+- R (>= 3.5.0)
 - The `geoGraph` package (installation below)
 - CRAN packages used by the scripts:
   `readr`, `vegan`, `dplyr`, `sf`, `terra`, `elevatr`, `sp`, `ggplot2`, `patchwork`
