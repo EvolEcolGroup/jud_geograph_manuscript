@@ -9,8 +9,6 @@
 
 ## Data directory
 ## ignore everything in data, except for *.md (used for additional metadata documentation) and data_sources.csv
-/data/raw/*
-!/data/raw/*.md
 !/data/raw/default
 /data/raw/default/*
 !/data/raw/default/.gitkeep
