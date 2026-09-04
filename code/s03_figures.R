@@ -4,6 +4,7 @@
 library(ggplot2)
 library(sf)
 library(geoGraph)
+library(patchwork)
 
 ########################################
 # Fig. 2a
@@ -51,32 +52,48 @@ ggsave("results/fig2a.png", plot = fig2a,
        width = 6, height = 6, units = "in", dpi = 300, bg = "white")
 
 ########################################
-# Fig. 2b 
+# Fig. 2b & 2c — scatters as ggplots
 ########################################
 
-# get the output from s01
-lcp_dist <- readRDS("data/intermediate/hgdp_worldwide/lcp_dist")
-gc_dist <- readRDS("data/intermediate/hgdp_worldwide/gc_dist")
+lcp_dist   <- readRDS("data/intermediate/hgdp_worldwide/lcp_dist")
+gc_dist    <- readRDS("data/intermediate/hgdp_worldwide/gc_dist")
 fst_shared <- readRDS("data/intermediate/hgdp_worldwide/fst_shared")
 
-## make all three plain numeric vectors in the same (dist) order
 fst   <- as.vector(as.dist(fst_shared))
 d_gc  <- as.vector(as.dist(gc_dist))
-d_lcp <- as.vector(as.dist(lcp_dist))          
+d_lcp <- as.vector(as.dist(lcp_dist))
 
-png("results/fig2b.png", width = 8, height = 4, units = "in", res = 300)
+fig2b <- ggplot(data.frame(d = d_gc, fst = fst), aes(d, fst)) +
+  geom_point(colour = adjustcolor("grey30", 0.4), size = 1.4) +
+  geom_smooth(method = "lm", se = FALSE, colour = "firebrick", linewidth = 1) +
+  annotate("text", x = -Inf, y = Inf, hjust = -0.25, vjust = 1.6,
+           label = sprintf("r = %.2f", cor(d_gc, fst)), size = 4.5) +
+  labs(x = "Great-circle distance", y = expression(F[ST])) +
+  theme_classic(base_size = 13)
 
-par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
-plot(d_gc, fst, pch = 19, col = adjustcolor("grey30", 0.4),
-     xlab = "Great-circle distance", ylab = expression(F[ST]))
-abline(lm(fst ~ d_gc), col = "firebrick", lwd = 2)
-legend("topleft", bty = "n", legend = sprintf("r = %.2f", cor(d_gc, fst)))
-plot(d_lcp, fst, pch = 19, col = adjustcolor("grey30", 0.4),
-     xlab = "Land least-cost distance (graph steps)", ylab = expression(F[ST]))
-abline(lm(fst ~ d_lcp), col = "firebrick", lwd = 2)
-legend("topleft", bty = "n", legend = sprintf("r = %.2f", cor(d_lcp, fst)))
+fig2c <- ggplot(data.frame(d = d_lcp, fst = fst), aes(d, fst)) +
+  geom_point(colour = adjustcolor("grey30", 0.4), size = 1.4) +
+  geom_smooth(method = "lm", se = FALSE, colour = "firebrick", linewidth = 1) +
+  annotate("text", x = -Inf, y = Inf, hjust = -0.25, vjust = 1.6,
+           label = sprintf("r = %.2f", cor(d_lcp, fst)), size = 4.5) +
+  labs(x = "Land least-cost distance (graph steps)", y = expression(F[ST])) +
+  theme_classic(base_size = 13)
 
-dev.off()
+########################################
+# Figure 2 — assemble
+########################################
+
+design <- "
+AA
+BC
+"
+fig2 <- fig2a + fig2b + fig2c +
+  plot_layout(design = design, heights = c(2, 1)) +   # A row taller (was 1.5)
+  plot_annotation(tag_levels = "A") &
+  theme(plot.tag = element_text(face = "bold", size = 16))
+
+ggsave("results/fig2.png", fig2,
+       width = 9, height = 12, units = "in", dpi = 300, bg = "white")
 
 ########################################
 # Fig. 3a
