@@ -52,41 +52,23 @@ node_attr$elevation[is.na(node_attr$elevation)] <- 0
 elevGraph@nodes.attr <- node_attr
 
 ########################################
-# 3. Plot the ruggedness surface
+# 3. HGDP Asia subset and FST matrix
 ########################################
 
-elev  <- node_attr$elevation
-n_col <- 256
-ramp  <- colorRampPalette(c("#f7fcb9", "#addd8e", "#78c679",
-                            "#41ab5d", "#238443", "#005a32"))(n_col)
-elev_idx     <- pmax(1, ceiling(elev / max(elev, na.rm = TRUE) * n_col))
-node_colours <- ramp[elev_idx]
-node_colours[is_sea] <- "lightblue"
-plot(elevGraph, col = node_colours, reset = TRUE, edges = FALSE)
+data(fst_hgdp)
+data(hgdp)
 
-########################################
-# 4. HGDP Asia subset and FST matrix
-########################################
-
-Fst_pairwise <- read_csv("data/raw/hgdp/Fst_pairwise.csv",
-                         show_col_types = FALSE)
-
-fst_mat <- as.matrix(as.data.frame(Fst_pairwise)[, -1])
-rownames(fst_mat) <- Fst_pairwise[[1]]
-
-# East Asian + Central/South Asian populations (drop two populations that are not on mainland)
+# Continental East Asian + Central/South Asian populations 
 asia <- hgdp[hgdp@data$Region %in% c("EAST_ASIA", "CENTRAL_SOUTH_ASIA")]
-asia <- asia[!asia@data$Population %in% c("Japanese", "TundraNentsi"), ]
-asia@data$Population[asia@data$Population == "Han (pooled)"] <- "Han"
+asia <- asia[!asia@data$Population %in% c("Japanese"), ] #keep only continental pops
 
-asia_data  <- asia@data
-pops       <- asia_data$Population
-fst_shared <- fst_mat[pops, pops]
+asia_data  <- asia@data 
+pops       <- asia_data$Population #25 populations
+fst_shared <- fst_hgdp[pops, pops]
 
 # Create new gData object with populations and gGraph
 coords <- data.frame(lon = asia_data$Longitude, lat = asia_data$Latitude)
 asiaGD <- new("gData", coords = coords, data = asia_data, gGraph.name = "elevGraph")
-plot(asiaGD, col.gGraph = node_colours)
 
 ########################################
 # 5. Grid search for the best ruggedness threshold
@@ -135,6 +117,7 @@ profile <- data.frame(
 ########################################
 # 6. Build the ruggedness-weighted graph at the best threshold
 ########################################
+
 best_idx       <- which.max(profile$mantel_r)
 best_threshold <- round(profile$threshold[best_idx], 1)  # 580.1
 
@@ -158,6 +141,7 @@ plot(optiGraph, reset = TRUE)
 ########################################
 # 7. Distances and Mantel tests
 ########################################
+
 hgdp.sub.raw <- setGraph(asiaGD, "hexGraph")   # plain land grid
 hgdp.sub.ele <- setGraph(asiaGD, "optiGraph")  # ruggedness-weighted grid
 
@@ -169,14 +153,10 @@ rugg_dist <- as.matrix(gPath2dist(dijkstraBetween(hgdp.sub.ele)))     # ruggedne
 dimnames(gc_dist)   <- list(pops, pops)
 dimnames(lcp_dist)  <- list(pops, pops)
 dimnames(rugg_dist) <- list(pops, pops)
+
 gc_dist   <- gc_dist[rownames(fst_shared), colnames(fst_shared)]
 lcp_dist  <- lcp_dist[rownames(fst_shared), colnames(fst_shared)]
 rugg_dist <- rugg_dist[rownames(fst_shared), colnames(fst_shared)]
-stopifnot(
-  identical(rownames(fst_shared), rownames(gc_dist)),
-  identical(rownames(fst_shared), rownames(lcp_dist)),
-  identical(rownames(fst_shared), rownames(rugg_dist))
-)
 
 mantel_r_gc   <- vegan::mantel(as.dist(fst_shared), as.dist(gc_dist),   method = "pearson")
 mantel_r_lcp  <- vegan::mantel(as.dist(fst_shared), as.dist(lcp_dist),  method = "pearson")

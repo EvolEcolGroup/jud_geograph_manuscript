@@ -10,11 +10,11 @@ source("code/s03_figures.R")
 
 ## s01_hgdp_worldwide.R
 
-Worldwide analysis with 49 HGDP populations.
+Worldwide analysis with 51 HGDP populations.
 
 - Loads FST matrix and population coordinates
 - Computes great-circle and land-restricted least-cost distances
-- Mantel tests: great-circle (*r* = 0.749) vs land LCP (*r* = 0.867)
+- Mantel tests: great-circle (*r* = 0.74) vs land LCP (*r* = 0.84)
 - Saves intermediate data to `data/intermediate/hgdp_worldwide/`
 
 

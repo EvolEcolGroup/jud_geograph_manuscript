@@ -2,22 +2,22 @@
 # code for figure 2 and 3
 
 library(ggplot2)
-library(sf)
 library(geoGraph)
 library(patchwork)
+library(sf)
 
 ########################################
 # Fig. 2a
 ########################################
 
 # get the output from s01
-hgdp.sub <- readRDS("data/intermediate/hgdp_worldwide/hgdp.sub.RDS")
+data(hgdp)
 myGraph  <- dropCosts(worldgraph.40k)
-hgdp.sub <- setGraph(hgdp.sub, "myGraph")
+hgdp <- setGraph(hgdp, "myGraph")
 
-origin.gd   <- hgdp.sub[getData(hgdp.sub)$Population %in% "Druze"]
+origin.gd   <- hgdp[getData(hgdp)$Population %in% "Druze"]
 origin.node <- getNodes(origin.gd)
-paths <- dijkstraFrom(hgdp.sub, origin.node)
+paths <- dijkstraFrom(hgdp, origin.node)
 origin_sf <- st_as_sf(
   as.data.frame(getCoords(worldgraph.40k)[origin.node, , drop = FALSE]),
   coords = c("lon", "lat"), crs = 4326
@@ -29,10 +29,10 @@ ortho_crs <- sprintf("+proj=ortho +lat_0=%s +lon_0=%s +ellps=sphere +units=m +no
                      lat0, lon0)
 R <- 6371000  # sphere radius (matches +ellps=sphere)
 
-## ocean as a filled disc of Earth radius in the ortho plane
+# ocean as a filled disc of Earth radius in the ortho plane
 ocean <- st_sf(geometry = st_sfc(st_buffer(st_point(c(0, 0)), R), crs = ortho_crs))
 
-## graticule built in lon/lat; coord_sf clips it to the visible hemisphere
+# graticule built in lon/lat; coord_sf clips it to the visible hemisphere
 grat <- st_graticule(lat = seq(-90, 90, 15), lon = seq(-180, 180, 15))
 
 fig2a <- ggplot() +
@@ -43,7 +43,7 @@ fig2a <- ggplot() +
   scale_colour_manual(values = c(land = "grey60"), na.value = "transparent",
                       guide = "none") +
   geom_gpath(data = paths, colour = "firebrick", linewidth = 0.5) +
-  geom_gdata(data = hgdp.sub, colour = "black", size = 1.2) +
+  geom_gdata(data = hgdp, colour = "black", size = 1.2) +
   geom_sf(data = origin_sf, colour = "dodgerblue", size = 3) +
   coord_sf(crs = ortho_crs) +
   theme_void()
@@ -55,11 +55,12 @@ ggsave("results/fig2a.png", plot = fig2a,
 # Fig. 2b & 2c — scatters as ggplots
 ########################################
 
-lcp_dist   <- readRDS("data/intermediate/hgdp_worldwide/lcp_dist")
-gc_dist    <- readRDS("data/intermediate/hgdp_worldwide/gc_dist")
-fst_shared <- readRDS("data/intermediate/hgdp_worldwide/fst_shared")
+# get data
+lcp_dist   <- readRDS("data/intermediate/hgdp_worldwide/lcp_dist.rds")
+gc_dist    <- readRDS("data/intermediate/hgdp_worldwide/gc_dist.rds")
+data(fst_hgdp)
 
-fst   <- as.vector(as.dist(fst_shared))
+fst   <- as.vector(as.dist(fst_hgdp))
 d_gc  <- as.vector(as.dist(gc_dist))
 d_lcp <- as.vector(as.dist(lcp_dist))
 
@@ -99,10 +100,10 @@ ggsave("results/fig2.png", fig2,
 # Fig. 3a
 ########################################
 
-elevGraph <- readRDS("data/intermediate/hgdp_asia/elevGraph.RDS")
+# get the gGraph and gData
+elevGraph <- readRDS("data/intermediate/hgdp_asia/elevGraph.rds")
 asiaGD    <- readRDS("data/intermediate/hgdp_asia/asiaGD.rds")
 
-## build a node data.frame from public accessors
 coords <- getCoords(elevGraph)
 node_df <- data.frame(
   lon       = coords[, 1],
@@ -112,7 +113,7 @@ node_df <- data.frame(
 )
 node_df$elevation[node_df$habitat == "sea"] <- NA
 
-## to sf points
+# convert to sf points
 node_sf <- st_as_sf(node_df, coords = c("lon", "lat"), crs = 4326)
 
 lon0 <- 100; lat0 <- 37
@@ -134,11 +135,11 @@ fig3a <- ggplot() +
                                   barwidth = 12, barheight = 0.5))
 
 
-
 ###################################
 # figure 3b
 ###################################
 
+# get the sweep
 profile <- readRDS("data/intermediate/hgdp_asia/profile.RDS")
 mantel_r_gc <- readRDS("data/intermediate/hgdp_asia/mantel_r_gc.rds")
 
@@ -148,18 +149,14 @@ plateau  <- profile[profile$mantel_r >= max(profile$mantel_r) - 0.01, ]
 plat_x   <- range(plateau$threshold)
 
 fig3b <- ggplot(profile, aes(threshold, mantel_r)) +
-  # plateau of near-best thresholds
   annotate("rect", xmin = plat_x[1], xmax = plat_x[2],
            ymin = -Inf, ymax = Inf, fill = "#2C6FB0", alpha = 0.10) +
-  # baseline: plain grid (no terrain)
   geom_hline(yintercept = baseline, linetype = "dashed",
              colour = "grey55", linewidth = 0.7) +
   annotate("text", x = min(profile$threshold), y = baseline,
            label = "plain grid (no terrain)",
            hjust = 0, vjust = -0.7, size = 4.6, colour = "grey40") +
-  # sweep curve
   geom_line(colour = "grey30", linewidth = 0.9) +
-  # best-fitting threshold (white halo + red point)
   geom_point(data = best, colour = "white",   size = 5.2) +
   geom_point(data = best, colour = "#B2182B", size = 3.6) +
   annotate("text", x = best$threshold, y = best$mantel_r,
@@ -181,6 +178,7 @@ ggsave("results/fig3b.png", fig3b, width = 7, height = 4.2,
 # figure 3c
 ###################################
 
+# get optimal and raw gGraph
 hexGraph <- readRDS("data/intermediate/hgdp_asia/hexGraph.RDS")
 optiGraph <- readRDS("data/intermediate/hgdp_asia/optiGraph.RDS")
 asiaGD    <- readRDS("data/intermediate/hgdp_asia/asiaGD.rds")
@@ -194,9 +192,7 @@ m <- dijkstraBetween(hgdp.sub.raw)
 # get geographic distances with elevation
 m_elev <- dijkstraBetween(hgdp.sub.ele)
 
-library(patchwork)
-
-# habitat palettes — sea light blue (as in fig3a); no ocean disc, no graticule
+# set colors
 pal0 <- c(sea = "white", land = "grey80")                       # without terrain
 pal1 <- c(sea = "white", land = "grey80", rugged = "#8b6340")   # with terrain
 
@@ -206,7 +202,7 @@ panel_theme <- list(
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 11))
 )
 
-## (a) WITHOUT terrain — plain land grid, plain least-cost paths
+# (a) no terrain
 fig3c_a <- ggplot() +
   geom_ggraph(data = elevGraph, aes(colour = habitat), edges = FALSE, size = 0.6) +
   scale_colour_manual(values = pal0, na.value = "transparent", guide = "none") +
@@ -214,6 +210,7 @@ fig3c_a <- ggplot() +
   geom_gdata(data = asiaGD, shape = 21, fill = "black", colour = "white", size = 3) +
   panel_theme
 
+# (b) with terrain
 fig3c_b <- ggplot() +
   geom_ggraph(data = optiGraph, aes(colour = habitat), edges = FALSE, size = 0.6) +
   scale_colour_manual(values = pal1, na.value = "transparent", guide = "none") +
@@ -230,8 +227,6 @@ ggsave("results/fig3c.png", fig3c, width = 10, height = 5, units = "in",
 # Figure 3 — assemble
 ########################################
 
-# A = ruggedness (big left) | C = without terrain (top right)
-# D = with terrain (bottom right) | B = sweep (full-width bottom)
 design <- "
 AAC
 AAD

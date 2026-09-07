@@ -41,8 +41,7 @@ install.packages(c("readr", "vegan", "dplyr", "sf", "terra",
 
 ## Reproduce the analyses
 
-Ensure `data/raw/hgdp/Fst_pairwise.csv` is present, then run the scripts
-sequentially from the repository root:
+Run the scripts sequentially from the repository root:
 
 ```r
 source("code/s01_hgdp_worldwide.R")  
@@ -59,7 +58,7 @@ source("code/s03_figures.R")
 
 ```
 code/     analysis and figure scripts (see code/README.md)
-data/     input and intermediate data  (see data/README.md)
+data/     generated intermediate data (see data/README.md)
 results/  generated figures
 ```
 
