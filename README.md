@@ -13,26 +13,16 @@ discrete global grids."*
 
 ## Installation
 
-### 1. Bioconductor dependencies
-`geoGraph` depends on `graph` and `RBGL`, which are on Bioconductor (not CRAN):
-
-```r
-if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install(c("graph", "RBGL"))
-```
-
-### 2. Install geoGraph (anonymised review copy)
+### 1. Install geoGraph (anonymised review copy)
 Open the anonymised package repository at
 <https://anonymous.4open.science/r/geograph-01B6>, click **"Download Repository"**
 (top right), and unzip it. Then install from the unzipped source folder:
 
 ```r
-install.packages("path/to/geograph-01B6", repos = NULL, type = "source")
-# or, to resolve remaining dependencies automatically:
-# pak::local_install("path/to/geograph-01B6")
+pak::local_install("path/to/geograph-01B6")
 ```
 
-### 3. CRAN packages used by the scripts
+### 2. CRAN packages used by the scripts
 
 ```r
 install.packages(c("readr", "vegan", "dplyr", "sf", "terra",
