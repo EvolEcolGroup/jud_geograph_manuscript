@@ -15,11 +15,11 @@ discrete global grids."*
 
 ### 1. Install geoGraph (anonymised review copy)
 Open the anonymised package repository at
-<https://anonymous.4open.science/r/geograph-01B6>, click **"Download Repository"**
+<https://anonymous.4open.science/r/geograph-01B7>, click **"Download Repository"**
 (top right), and unzip it. Then install from the unzipped source folder:
 
 ```r
-pak::local_install("path/to/geograph-01B6")
+pak::local_install("path/to/geograph-01B7")
 ```
 
 ### 2. CRAN packages used by the scripts
