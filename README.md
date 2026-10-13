@@ -13,13 +13,10 @@ discrete global grids."*
 
 ## Installation
 
-### 1. Install geoGraph (anonymised review copy)
-Open the anonymised package repository at
-<https://anonymous.4open.science/r/geograph-01B7>, click **"Download Repository"**
-(top right), and unzip it. Then install from the unzipped source folder:
+### 1. Install geoGraph 
 
 ```r
-pak::local_install("path/to/geograph-01B7")
+  pak::pak("EvolEcolGroup/geograph@v2.0.1")
 ```
 
 ### 2. CRAN packages used by the scripts
