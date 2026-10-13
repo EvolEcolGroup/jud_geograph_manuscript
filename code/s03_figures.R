@@ -90,7 +90,7 @@ bc
 "
 fig2 <- fig2a + fig2b + fig2c +
   plot_layout(design = design, heights = c(2, 1)) +   # A row taller (was 1.5)
-  plot_annotation(tag_levels = "A") &
+  plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(face = "bold", size = 16))
 
 ggsave("results/fig2.png", fig2,
@@ -125,7 +125,7 @@ ramp <- colorRampPalette(c("#f7fcb9", "#addd8e", "#78c679",
 fig3a <- ggplot() +
   geom_sf(data = node_sf, aes(colour = elevation), size = 0.6) +
   scale_colour_gradientn(colours = ramp, na.value = "lightblue",
-                         name = "SD of Elevation (m)") +
+                         name = "SD of elevation (m)") +
   geom_gdata(data = asiaGD, shape = 21, fill = "firebrick",
              colour = "white", size = 3) +
   coord_sf(crs = ortho_crs) +
@@ -160,7 +160,7 @@ fig3b <- ggplot(profile, aes(threshold, mantel_r)) +
   geom_point(data = best, colour = "white",   size = 5.2) +
   geom_point(data = best, colour = "#B2182B", size = 3.6) +
   annotate("text", x = best$threshold, y = best$mantel_r,
-           label = sprintf("best: r = %.2f (%s)", best$mantel_r, best$quantile),
+           label = sprintf("best: r = %.2f (%s percentile)", best$mantel_r, best$quantile),
            hjust = -0.05, vjust = -1.0, size = 4.8, colour = "#B2182B",
            fontface = "bold") +
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.14))) +
@@ -237,7 +237,7 @@ fig3 <- fig3a + fig3b + fig3c_a + fig3c_b +
   plot_layout(design = design,
               widths  = c(1, 1, 1.1),
               heights = c(1, 1, 1.1)) +   # taller sweep row (was 0.8)
-  plot_annotation(tag_levels = "A") &
+  plot_annotation(tag_levels = "a") &
   theme(plot.tag = element_text(face = "bold", size = 16))
 
 ggsave("results/fig3.png", fig3,
