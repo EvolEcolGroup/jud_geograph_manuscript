@@ -69,7 +69,7 @@ fig2b <- ggplot(data.frame(d = d_gc, fst = fst), aes(d, fst)) +
   geom_smooth(method = "lm", se = FALSE, colour = "firebrick", linewidth = 1) +
   annotate("text", x = -Inf, y = Inf, hjust = -0.25, vjust = 1.6,
            label = sprintf("r = %.2f", cor(d_gc, fst)), size = 4.5) +
-  labs(x = "Great-circle distance", y = expression(F[ST])) +
+  labs(x = "Great-circle distance (km)", y = expression(F[ST])) +
   theme_classic(base_size = 13)
 
 fig2c <- ggplot(data.frame(d = d_lcp, fst = fst), aes(d, fst)) +
@@ -85,8 +85,8 @@ fig2c <- ggplot(data.frame(d = d_lcp, fst = fst), aes(d, fst)) +
 ########################################
 
 design <- "
-AA
-BC
+aa
+bc
 "
 fig2 <- fig2a + fig2b + fig2c +
   plot_layout(design = design, heights = c(2, 1)) +   # A row taller (was 1.5)
@@ -228,9 +228,9 @@ ggsave("results/fig3c.png", fig3c, width = 10, height = 5, units = "in",
 ########################################
 
 design <- "
-AAC
-AAD
-BBB
+aac
+aad
+bbb
 "
 
 fig3 <- fig3a + fig3b + fig3c_a + fig3c_b +
