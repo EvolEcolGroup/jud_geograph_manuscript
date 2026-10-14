@@ -160,7 +160,8 @@ fig3b <- ggplot(profile, aes(threshold, mantel_r)) +
   geom_point(data = best, colour = "white",   size = 5.2) +
   geom_point(data = best, colour = "#B2182B", size = 3.6) +
   annotate("text", x = best$threshold, y = best$mantel_r,
-           label = sprintf("best: r = %.2f (%s percentile)", best$mantel_r, best$quantile),
+           label = sprintf("best: r = %.2f (top %.1f%%)", best$mantel_r,
+                           100 - as.numeric(sub("%", "", best$quantile))),
            hjust = -0.05, vjust = -1.0, size = 4.8, colour = "#B2182B",
            fontface = "bold") +
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.14))) +
