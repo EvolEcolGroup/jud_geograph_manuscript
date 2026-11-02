@@ -16,7 +16,7 @@ discrete global grids."*
 ### 1. Install geoGraph 
 
 ```r
-  pak::pak("EvolEcolGroup/geograph@v2.0.1")
+  pak::pak("EvolEcolGroup/geograph@v2.1.0")
 ```
 
 ### 2. CRAN packages used by the scripts
